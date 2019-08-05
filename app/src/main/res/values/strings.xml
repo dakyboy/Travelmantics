@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Travelmantics</string>
+    <string name="travel_title_hint">Travel Title</string>
+    <string name="save_button">Save</string>
+    <string name="travel_description_hint">Travel Description</string>
+    <string name="travel_price">Travel price</string>
+    <string name="save_toast">Travel Deal saved</string>
+    <string name="title_hint">Samuka Pool Chills</string>
+    <string name="travel_deal_description">The water is as cool as the breeze</string>
+    <string name="traveldeal_price_hint">200000</string>
+    <string name="new_travel_deal">new travel deal</string>
 </resources>
