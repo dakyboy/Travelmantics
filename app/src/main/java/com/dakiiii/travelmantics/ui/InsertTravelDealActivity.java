@@ -22,6 +22,7 @@ public class InsertTravelDealActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
     private EditText titleEditText, descriptionEditText, priceEditText;
+    private TravelDeal deal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +33,18 @@ public class InsertTravelDealActivity extends AppCompatActivity {
         descriptionEditText = findViewById(R.id.editTextDescription);
         priceEditText = findViewById(R.id.editTextPrice);
 //        db
-        FirebaseUtil.openFirebaseReference(FirebaseUtil.TRAVEL_DEALS_REF);
+        FirebaseUtil.openFirebaseReference( this);
         firebaseDatabase = FirebaseUtil.travelDealFirebaseDatabase;
         databaseReference = FirebaseUtil.travelDealDatabaseReference;
 
         Intent intent = getIntent();
-        TravelDeal travelDeal = intent.getParcelableExtra("travel_Deal");
-        titleEditText.setText(travelDeal.getTitle());
-        descriptionEditText.setText(travelDeal.getDescription());
-        priceEditText.setText(travelDeal.getPrice());
+        deal = intent.getParcelableExtra("travel_Deal");
+        if (deal == null) {
+            deal = new TravelDeal();
+        }
+        titleEditText.setText(deal.getTitle());
+        descriptionEditText.setText(deal.getDescription());
+        priceEditText.setText(deal.getPrice());
 
     }
 
@@ -56,9 +60,12 @@ public class InsertTravelDealActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_item_save :
                 saveTravelDeal();
-                Toast.makeText(this, R.string.save_toast, Toast.LENGTH_SHORT).show();
                 clean();
+                backToList();
                 return true;
+            case R.id.menu_item_delete_traveldeal :
+                deleteTravelDeal();
+                backToList();
                 default: return super.onOptionsItemSelected(item);
         }
 
@@ -73,11 +80,31 @@ public class InsertTravelDealActivity extends AppCompatActivity {
     }
 
     private void saveTravelDeal() {
-        String title = titleEditText.getText().toString();
-        String price = priceEditText.getText().toString();
-        String description = descriptionEditText.getText().toString();
+        deal.setTitle(titleEditText.getText().toString());
+        deal.setPrice(priceEditText.getText().toString());
+        deal.setDescription(descriptionEditText.getText().toString());
+        if (deal.getId() == null){
+            databaseReference.push().setValue(deal);
+            Toast.makeText(this, R.string.save_toast, Toast.LENGTH_SHORT).show();
+        }
+        else {
+            databaseReference.child(deal.getId()).setValue(deal);
+            Toast.makeText(this, "Travel deal updated", Toast.LENGTH_SHORT).show();
+        }
 
-        TravelDeal travelDeal = new TravelDeal(title, description, price, "");
-        databaseReference.push().setValue(travelDeal);
+    }
+
+    private void deleteTravelDeal(){
+        if (deal == null) {
+            Toast.makeText(this, "save deal before deletiing it", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            databaseReference.child(deal.getId()).removeValue();
+        }
+    }
+
+    private void backToList(){
+        Intent intent = new Intent(this, ViewTravelDealsActivity.class);
+        startActivity(intent);
     }
 }

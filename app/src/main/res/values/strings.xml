@@ -9,4 +9,5 @@
     <string name="travel_deal_description">The water is as cool as the breeze</string>
     <string name="traveldeal_price_hint">200000</string>
     <string name="new_travel_deal">new travel deal</string>
+    <string name="delete">Delete</string>
 </resources>
